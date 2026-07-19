@@ -1,0 +1,44 @@
+{
+  "languageMode": "nonstrict",
+  "runtime": {
+    "version": "Luau"
+  },
+  "diagnostics": {
+    "globals": [
+      "game",
+      "workspace",
+      "script",
+      "plugin",
+      "shared",
+      "Enum",
+      "task",
+      "typeof",
+      "warn",
+      "print",
+      "require",
+      "_G"
+    ]
+  },
+  "workspace": {
+    "ignoreDir": [
+      ".git",
+      ".vscode",
+      "node_modules",
+      "dist",
+      "build",
+      "out",
+      "Packages"
+    ]
+  },
+  "lint": {
+    "UnknownGlobal": "Warning",
+    "UndefinedGlobal": "Warning",
+    "LocalShadow": "Warning",
+    "UnusedLocal": "Hint",
+    "UnusedFunction": "Hint",
+    "DeprecatedApi": "Warning",
+    "TableOperations": "Warning",
+    "DuplicateCondition": "Warning",
+    "UnreachableCode": "Warning"
+  }
+}

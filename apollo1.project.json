@@ -1,0 +1,29 @@
+{
+  "name": "Code",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "modules": {
+        "$path": "src/Apollo1/ReplicatedStorage/modules"
+      },
+      "packages": {
+        "$path": "Packages"
+      }
+    },
+
+    "ServerScriptService": {
+      "modules": {
+        "$path": "src/Apollo1/ServerScriptService/modules"
+      }
+    },
+
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "modules": {
+          "$path": "src/Apollo1/StarterPlayer/StarterPlayerScripts/modules"
+        }
+      }
+    }
+  }
+}
