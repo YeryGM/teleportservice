@@ -10,15 +10,13 @@ local UISLobby = require(script.Parent.Parent.Parent.services.UISLobby)
 local Button = require(script.Parent.Parent.common.Button)
 
 local DIFFICULTY_KEYS = {
-	[Enums.lobby.difficulty.Easy] = "Easy",
-	[Enums.lobby.difficulty.Normal] = "Normal",
-	[Enums.lobby.difficulty.Hard] = "Hard",
+	[Enums.diff.Normal] = "Normal",
+	[Enums.diff.Nightmare] = "Nightmare",
 }
 
 local DIFFICULTY_VALUES = {
-	Enums.lobby.difficulty.Easy,
-	Enums.lobby.difficulty.Normal,
-	Enums.lobby.difficulty.Hard,
+	Enums.diff.Normal,
+	Enums.diff.Nightmare,
 }
 
 local function LobbyPanel()

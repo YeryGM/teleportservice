@@ -12,6 +12,8 @@ wally install   # installs Packages/ — must run after clone; directory is giti
 
 Dependencies: React 17.2.1, ReactRoblox 17.2.1, Promise 3.5.2, Reflex 4.3.1.
 
+`.luaurc.json` sets `languageMode` to `nonstrict` — Luau LSP won't flag missing type annotations.
+
 ## Commands
 
 ```sh
@@ -32,24 +34,24 @@ All game code lives under `src/apollo1/`. Rojo maps three directories into the D
 | `ServerScriptService` | `src/apollo1/ServerScriptService/modules/` | Server-only logic |
 | `StarterPlayerScripts` | `src/apollo1/StarterPlayer/StarterPlayerScripts/modules/` | Client-only logic + React UI |
 
-`src/apollo1/NotInGameYet/` contains unused/in-progress code, not mapped by Rojo.
+`src/apollo1/NotInGameYet/` contains unused/in-progress code, not mapped by Rojo. `Packages2/` contains an untracked `FastCast2.rbxmx` model (not mapped by Rojo, not gitignored).
 
 ## Conventions
 
 - **Client modules** use `*C.lua` suffix: `PlayerC`, `StoryManagerC`, `ZoneDetectorC`, etc.
-- **Server scripts** use `*.server.lua` extension: `Main.server.lua`, `ScriptTag.server.lua`.
-- **Reflex store slices** follow strict 4-file pattern: `{Name}State.lua`, `{Name}Producer.lua`, `{Name}Actions.lua`, `{Name}Selectors.lua`. 11 slices total (ui, shop, crafting, death, objectives, stamina, subtitles, qte, hud, cutscene, minigame).
+- **Server scripts**: only entrypoints use `*.server.lua` (`Main.server.lua`). All other server modules use plain `.lua`.
+- **Reflex store slices** follow strict 4-file pattern: `{Name}State.lua`, `{Name}Producer.lua`, `{Name}Actions.lua`, `{Name}Selectors.lua`. 12 slices total (ui, shop, crafting, death, objectives, stamina, subtitles, qte, hud, cutscene, minigame, lobby).
 - **UI services** (`ui/services/UIS*.lua`) bridge React UI to server Remotes — they invoke `RemoteFunction:InvokeServer()` then dispatch to the Reflex store via Actions.
 - **Custom hooks** use `use` prefix: `useHud`, `useShop`, `useStoreSelector`, etc.
-- **Data enums** use `E` prefix (`EPurchases`, `EDialogues`). **Info files** use `IF` prefix (`IFBombs`, `IFConsumables`).
-- **All modules** must implement `:load()` and `init()`. Zone modules additionally handle `loadZone(previousZone, newZone)`.
+- **Data enums** use `E` prefix (e.g. `EDialogues`). Most enums are consolidated in the central `Enums.lua`. **Info files** use `IF` prefix (`IFBombs`, `IFTolls`).
+- **All modules** must implement `:load()`. Zone modules additionally handle `loadZone(previousZone, newZone)`.
 
 ## Entrypoints
 
-Both entrypoints are 2-line files that bootstrap via a Schemer module:
+Both entrypoints bootstrap via a `Signals` module then a Schemer module:
 
-- **Server**: `Main.server.lua` → `Schemer:load()`
-- **Client**: `Main.client.lua` → `SchemerC:load()`
+- **Server**: `Main.server.lua` → creates `Signals`, then `Schemer:load()`
+- **Client**: `Main.client.lua` → creates `SignalsC`, then `SchemerC:load()`
 
 Bootstrap sequence (both sides): Schemer → ZoneDetector → ModuleLoader. ModuleLoader reads a `Modules.lua` registry that lists all services for the current zone.
 

@@ -1,5 +1,8 @@
 local DEBUG_MODE = true
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Enums = require(ReplicatedStorage.modules.general.data.Enums)
+
 local LobbyState = {}
 
 function LobbyState.createInitialState()
@@ -7,7 +10,7 @@ function LobbyState.createInitialState()
 		isOpen = false,
 		chapters = {},
 		chapterSelected = nil,
-		difficulty = 2,
+		difficulty = Enums.diff.Normal,
 	}
 end
 

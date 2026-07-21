@@ -2,14 +2,12 @@ local DEBUG_MODE = true
 
 local Players = game:GetService("Players")
 local CollectionService = game:GetService("CollectionService")
-local MemoryStoreService = game:GetService("MemoryStoreService")
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Enums = require(ReplicatedStorage.modules.general.data.Enums)
 local Chapters = require(ReplicatedStorage.modules.general.data.Chapters)
 local StateMachine = require(ReplicatedStorage.modules.general.utils.StateMachine)
+local SessionManager = require(script.Parent.SessionManager)
 
 local lobbyEvents = ReplicatedStorage:WaitForChild("events"):WaitForChild("general"):WaitForChild("lobby")
 local OpenLobbyUI: RemoteEvent = lobbyEvents:WaitForChild("OpenLobbyUI")
@@ -18,7 +16,6 @@ local SubmitLobbyConfig: RemoteEvent = lobbyEvents:WaitForChild("SubmitLobbyConf
 local CancelLobby: RemoteEvent = lobbyEvents:WaitForChild("CancelLobby")
 
 local TAG = "TeleportLobby"
-local SESSION_EXPIRY = 600
 
 local LobbyManager = {
 	pads = {},
@@ -102,7 +99,7 @@ function LobbyManager:_setupPad(part: BasePart)
 		players = {},
 		host = nil,
 		sizeTarget = 3,
-		difficulty = Enums.lobby.difficulty.Normal,
+		difficulty = Enums.diff.Normal,
 		chapter = nil,
 		conns = {},
 		checkThread = nil,
@@ -404,47 +401,14 @@ function LobbyManager:_executeTeleport(pad)
 		print("[LobbyManager] PlaceId: " .. tostring(placeId) .. " | Jugadores: " .. tostring(#playerList))
 	end
 
-	local sessionId = HttpService:GenerateGUID(false)
-	if DEBUG_MODE then
-		print("[LobbyManager] SessionID: " .. sessionId)
-	end
-
-	local playerNames = {}
-	for _, p in ipairs(playerList) do
-		table.insert(playerNames, p.Name)
-	end
-
-	local sortedMap = MemoryStoreService:GetSortedMap("LobbySessions")
-	local okStore, errStore = pcall(function()
-		sortedMap:SetAsync(sessionId, {
-			chapter = pad.chapter,
-			difficulty = pad.difficulty,
-			size = pad.sizeTarget,
-			players = playerNames,
-		}, SESSION_EXPIRY)
-	end)
-
-	if not okStore then
-		warn("[LobbyManager] MemoryStore fallo -> " .. tostring(errStore))
-	else
-		if DEBUG_MODE then
-			print("[LobbyManager] Sesion guardada en MemoryStore (expira en " .. tostring(SESSION_EXPIRY) .. "s)")
-		end
-	end
-
-	local teleportData = {
-		session = sessionId,
+	local result = SessionManager.CreateAndTeleport(playerList, placeId, {
 		chapter = pad.chapter,
 		difficulty = pad.difficulty,
 		size = pad.sizeTarget,
-	}
+	})
 
-	local okTeleport, errTeleport = pcall(function()
-		TeleportService:TeleportAsync(placeId, playerList, teleportData)
-	end)
-
-	if not okTeleport then
-		warn("[LobbyManager] TeleportAsync fallo -> " .. tostring(errTeleport))
+	if not result.success then
+		warn("[LobbyManager] Teleport failed: " .. tostring(result.error))
 		if DEBUG_MODE then
 			print("[LobbyManager] Reseteando " .. pad.part.Name .. " a Libre")
 		end
@@ -454,7 +418,7 @@ function LobbyManager:_executeTeleport(pad)
 	end
 
 	if DEBUG_MODE then
-		print("[LobbyManager] TeleportAsync ejecutado exitosamente")
+		print("[LobbyManager] Teleport ejecutado exitosamente")
 	end
 
 	task.wait(2)
@@ -469,7 +433,7 @@ function LobbyManager:_resetPad(pad)
 	pad.host = nil
 	pad.chapter = nil
 	pad.sizeTarget = 3
-	pad.difficulty = Enums.lobby.difficulty.Normal
+	pad.difficulty = Enums.diff.Normal
 end
 
 function LobbyManager:_getPadByPlayer(player)
