@@ -2,12 +2,14 @@ local DEBUG_MODE = true
 
 local Players = game:GetService("Players")
 local CollectionService = game:GetService("CollectionService")
+local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Enums = require(ReplicatedStorage.modules.general.data.Enums)
 local Chapters = require(ReplicatedStorage.modules.general.data.Chapters)
 local StateMachine = require(ReplicatedStorage.modules.general.utils.StateMachine)
 local SessionManager = require(script.Parent.SessionManager)
+local MemoryStoreManager = require(script.Parent.MemoryStoreManager)
 
 local lobbyEvents = ReplicatedStorage:WaitForChild("events"):WaitForChild("general"):WaitForChild("lobby")
 local OpenLobbyUI: RemoteEvent = lobbyEvents:WaitForChild("OpenLobbyUI")
@@ -401,11 +403,38 @@ function LobbyManager:_executeTeleport(pad)
 		print("[LobbyManager] PlaceId: " .. tostring(placeId) .. " | Jugadores: " .. tostring(#playerList))
 	end
 
-	local result = SessionManager.CreateAndTeleport(playerList, placeId, {
+	local sessionId = HttpService:GenerateGUID(false)
+	if DEBUG_MODE then
+		print("[LobbyManager] SessionID: " .. sessionId)
+	end
+
+	local playerNames = {}
+	for _, player in ipairs(playerList) do
+		table.insert(playerNames, player.Name)
+	end
+
+	local teleportData = {
+		session = sessionId,
 		chapter = pad.chapter,
 		difficulty = pad.difficulty,
 		size = pad.sizeTarget,
+	}
+
+	local saved = MemoryStoreManager.SaveSession(sessionId, {
+		chapter = pad.chapter,
+		difficulty = pad.difficulty,
+		size = pad.sizeTarget,
+		players = playerNames,
 	})
+
+	if not saved then
+		warn("[LobbyManager] " .. pad.part.Name .. ": Session save failed, aborting teleport")
+		self:_resetPad(pad)
+		pad.sm:SetState(Enums.lobby.state.Libre)
+		return
+	end
+
+	local result = SessionManager.TeleportGroup(playerList, placeId, teleportData)
 
 	if not result.success then
 		warn("[LobbyManager] Teleport failed: " .. tostring(result.error))
