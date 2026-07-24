@@ -4,7 +4,7 @@ local Chapters = {
 	Capitulo_1 = {
 		DisplayName = "Capitulo 1",
 		Places = {
-			77738210933862, 
+			127835015610242, 
 		},
 	},
 	Capitulo_2 = {
