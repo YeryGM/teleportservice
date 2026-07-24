@@ -9,16 +9,20 @@ function useLobby.useOpen()
 	return useStoreSelector(LobbySelectors.selectOpen)
 end
 
-function useLobby.useDifficulty()
-	return useStoreSelector(LobbySelectors.selectDifficulty)
-end
-
-function useLobby.useChapterSelected()
-	return useStoreSelector(LobbySelectors.selectChapterSelected)
-end
-
 function useLobby.useChapters()
 	return useStoreSelector(LobbySelectors.selectChapters)
+end
+
+function useLobby.useChapterIndex()
+	return useStoreSelector(LobbySelectors.selectChapterIndex)
+end
+
+function useLobby.useDifficultyIndex()
+	return useStoreSelector(LobbySelectors.selectDifficultyIndex)
+end
+
+function useLobby.usePartySize()
+	return useStoreSelector(LobbySelectors.selectPartySize)
 end
 
 if debugOn then

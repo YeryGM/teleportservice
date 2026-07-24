@@ -3,6 +3,7 @@ local debugOn = true
 local Players = game:GetService("Players")
 local CollectionService = game:GetService("CollectionService")
 local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Enums = require(ReplicatedStorage.modules.general.data.Enums)
@@ -306,13 +307,21 @@ function LobbyManager:_onSubmitConfig(player, data)
 		return
 	end
 
+	local partySize = data.partySize
+	if type(partySize) ~= "number" or partySize < 1 or partySize > 5 then
+		warn("[LobbyManager] SubmitLobbyConfig: partySize invalido (" .. tostring(partySize) .. ")")
+		return
+	end
+
 	pad.chapter = chapterKey
 	pad.difficulty = difficulty
+	pad.sizeTarget = partySize
 	pad.players[player] = true
 
 	if debugOn then
 		print("[LobbyManager] Configuracion recibida -> chapter=" .. chapterKey
-			.. ", difficulty=" .. tostring(difficulty))
+			.. ", difficulty=" .. tostring(difficulty)
+			.. ", partySize=" .. tostring(partySize))
 		print("[LobbyManager] " .. pad.part.Name .. ": Configurando -> Esperando")
 	end
 
@@ -461,7 +470,7 @@ function LobbyManager:_resetPad(pad)
 	end
 	pad.host = nil
 	pad.chapter = nil
-	pad.sizeTarget = 3
+	pad.sizeTarget = 1
 	pad.difficulty = Enums.diff.Normal
 end
 

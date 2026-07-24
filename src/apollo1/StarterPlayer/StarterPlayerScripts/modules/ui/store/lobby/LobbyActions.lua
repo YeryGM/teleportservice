@@ -12,35 +12,63 @@ function LobbyActions.openLobby()
 	if debugOn then
 		print("[LobbyActions] openLobby")
 	end
-	RootStore.producer.lobby.openLobby()
+	RootStore.producer.openLobby()
 end
 
 function LobbyActions.closeLobby()
 	if debugOn then
 		print("[LobbyActions] closeLobby")
 	end
-	RootStore.producer.lobby.closeLobby()
-end
-
-function LobbyActions.setDifficulty(difficulty: number)
-	if debugOn then
-		print("[LobbyActions] setDifficulty: " .. tostring(difficulty))
-	end
-	RootStore.producer.lobby.setDifficulty(difficulty)
-end
-
-function LobbyActions.setChapter(chapter: string)
-	if debugOn then
-		print("[LobbyActions] setChapter: " .. chapter)
-	end
-	RootStore.producer.lobby.setChapter(chapter)
+	RootStore.producer.closeLobby()
 end
 
 function LobbyActions.setChapters(chapters: {any})
 	if debugOn then
 		print("[LobbyActions] setChapters: " .. tostring(#chapters) .. " capitulos")
 	end
-	RootStore.producer.lobby.setChapters(chapters)
+	RootStore.producer.setChapters(chapters)
+end
+
+function LobbyActions.nextChapter()
+	if debugOn then
+		print("[LobbyActions] nextChapter")
+	end
+	RootStore.producer.nextChapter()
+end
+
+function LobbyActions.prevChapter()
+	if debugOn then
+		print("[LobbyActions] prevChapter")
+	end
+	RootStore.producer.prevChapter()
+end
+
+function LobbyActions.nextDifficulty()
+	if debugOn then
+		print("[LobbyActions] nextDifficulty")
+	end
+	RootStore.producer.nextDifficulty()
+end
+
+function LobbyActions.prevDifficulty()
+	if debugOn then
+		print("[LobbyActions] prevDifficulty")
+	end
+	RootStore.producer.prevDifficulty()
+end
+
+function LobbyActions.incrementParty()
+	if debugOn then
+		print("[LobbyActions] incrementParty")
+	end
+	RootStore.producer.incrementParty()
+end
+
+function LobbyActions.decrementParty()
+	if debugOn then
+		print("[LobbyActions] decrementParty")
+	end
+	RootStore.producer.decrementParty()
 end
 
 return LobbyActions

@@ -54,11 +54,11 @@ function UISLobby.destroy()
 	end
 end
 
-function UISLobby.submitConfig(chapter: string, difficulty: number)
+function UISLobby.submitConfig(chapter: string, difficulty: number, partySize: number)
 	if debugOn then
-		print("[UISLobby] submitConfig -> chapter: " .. chapter .. ", difficulty: " .. tostring(difficulty))
+		print("[UISLobby] submitConfig -> chapter: " .. chapter .. ", difficulty: " .. tostring(difficulty) .. ", partySize: " .. tostring(partySize))
 	end
-	SubmitLobbyConfig:FireServer({ chapter = chapter, difficulty = difficulty })
+	SubmitLobbyConfig:FireServer({ chapter = chapter, difficulty = difficulty, partySize = partySize })
 end
 
 function UISLobby.cancel()

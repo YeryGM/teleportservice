@@ -9,8 +9,9 @@ function LobbyState.createInitialState()
 	return {
 		isOpen = false,
 		chapters = {},
-		chapterSelected = nil,
-		difficulty = Enums.diff.Normal,
+		chapterIndex = 1,
+		difficultyIndex = 1,
+		partySize = 1,
 	}
 end
 

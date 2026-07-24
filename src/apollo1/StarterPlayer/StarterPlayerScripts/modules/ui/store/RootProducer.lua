@@ -7,6 +7,4 @@ local RootProducer = Reflex.combineProducers({
     lobby = LobbyProducer,
 })
 
-RootProducer.lobby = LobbyProducer
-
 return RootProducer

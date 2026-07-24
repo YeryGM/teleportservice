@@ -7,6 +7,7 @@ local Enums = {
     diff = {
         Normal = 1,
         Nightmare = 2,
+        COUNT = 2,
     },
     platform = {
         PC = 1,
