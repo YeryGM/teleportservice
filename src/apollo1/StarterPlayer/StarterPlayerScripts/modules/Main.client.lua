@@ -1,6 +1,5 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local SignalsC = require(ReplicatedStorage.modules.general.data.SignalsC)
-SignalsC.create()
+local SignalsC = require(script.Parent.general.data.SignalsC)
+local UI = require(script.Parent.ui.UI)
 
-local schemer = require(script.Parent.main.loading.SchemerC)
-schemer:load()
+SignalsC.create()
+UI:load()

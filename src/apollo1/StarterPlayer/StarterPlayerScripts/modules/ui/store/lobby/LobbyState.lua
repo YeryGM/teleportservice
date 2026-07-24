@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Enums = require(ReplicatedStorage.modules.general.data.Enums)
@@ -14,7 +14,7 @@ function LobbyState.createInitialState()
 	}
 end
 
-if DEBUG_MODE then
+if debugOn then
 	print("[LobbyState] Estado inicial creado")
 end
 

@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local Players = game:GetService("Players")
 local CollectionService = game:GetService("CollectionService")
@@ -25,7 +25,7 @@ local LobbyManager = {
 }
 
 function LobbyManager:load()
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Inicializando...")
 	end
 
@@ -33,12 +33,12 @@ function LobbyManager:load()
 	for _ in pairs(Chapters) do
 		chapterCount += 1
 	end
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Capitulos disponibles: " .. tostring(chapterCount))
 	end
 
 	local taggedParts = CollectionService:GetTagged(TAG)
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Pads encontrados: " .. tostring(#taggedParts))
 	end
 
@@ -58,14 +58,14 @@ function LobbyManager:load()
 	table.insert(self.connections, submitConn)
 	table.insert(self.connections, cancelConn)
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Senales conectadas (SubmitLobbyConfig, CancelLobby)")
 		print("[LobbyManager] Inicializacion completa")
 	end
 end
 
 function LobbyManager:unload()
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Descargando...")
 	end
 
@@ -89,7 +89,7 @@ function LobbyManager:unload()
 	end
 	self.connections = {}
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Descarga completa")
 	end
 end
@@ -110,7 +110,7 @@ function LobbyManager:_setupPad(part: BasePart)
 	self:_registerStates(pad)
 	self.pads[part] = pad
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Lobby Pad inicializado para " .. part.Name)
 	end
 
@@ -129,7 +129,7 @@ function LobbyManager:_registerStates(pad)
 	local sm = pad.sm
 
 	sm:SetStateChangedCallback(function(prevState, newState)
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyManager] " .. pad.part.Name .. ": " .. tostring(prevState) .. " -> " .. tostring(newState))
 		end
 	end)
@@ -205,7 +205,7 @@ function LobbyManager:_onTouched(pad, hit)
 		return
 	end
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Jugador " .. player.Name .. " intentando crear partida")
 	end
 
@@ -236,7 +236,7 @@ function LobbyManager:_onTouchedWaiting(pad, hit)
 		count += 1
 	end
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] " .. player.Name .. " se unio a " .. pad.part.Name .. " (" .. count .. "/" .. pad.sizeTarget .. ")")
 	end
 end
@@ -261,7 +261,7 @@ function LobbyManager:_onTouchEndedWaiting(pad, hit)
 		count += 1
 	end
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] " .. player.Name .. " salio de " .. pad.part.Name .. " (" .. count .. "/" .. pad.sizeTarget .. ")")
 	end
 end
@@ -274,21 +274,21 @@ function LobbyManager:_onSubmitConfig(player, data)
 
 	local pad = self:_getPadByPlayer(player)
 	if not pad then
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyManager] SubmitLobbyConfig: " .. player.Name .. " no esta en ningun pad")
 		end
 		return
 	end
 
 	if pad.host ~= player then
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyManager] SubmitLobbyConfig: " .. player.Name .. " no es el host")
 		end
 		return
 	end
 
 	if pad.sm:GetState() ~= Enums.lobby.state.Configurando then
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyManager] SubmitLobbyConfig: pad no esta en Configurando")
 		end
 		return
@@ -310,7 +310,7 @@ function LobbyManager:_onSubmitConfig(player, data)
 	pad.difficulty = difficulty
 	pad.players[player] = true
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Configuracion recibida -> chapter=" .. chapterKey
 			.. ", difficulty=" .. tostring(difficulty))
 		print("[LobbyManager] " .. pad.part.Name .. ": Configurando -> Esperando")
@@ -326,7 +326,7 @@ function LobbyManager:_onCancelLobby(player)
 	end
 
 	if pad.host ~= player then
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyManager] CancelLobby: " .. player.Name .. " no es el host")
 		end
 		return
@@ -337,7 +337,7 @@ function LobbyManager:_onCancelLobby(player)
 		return
 	end
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] " .. pad.part.Name .. ": CancelLobby -> reset a Libre")
 	end
 
@@ -354,7 +354,7 @@ function LobbyManager:_checkTeleportLoop(pad)
 		end
 
 		if count >= pad.sizeTarget then
-			if DEBUG_MODE then
+			if debugOn then
 				print("[LobbyManager] " .. pad.part.Name .. ": Jugadores completos (" .. count .. "/" .. pad.sizeTarget .. ") -> Teleportando")
 			end
 			pad.sm:SetState(Enums.lobby.state.Teleportando)
@@ -374,7 +374,7 @@ function LobbyManager:_executeTeleport(pad)
 	end
 
 	if #playerList == 0 then
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyManager] " .. pad.part.Name .. ": Sin jugadores, abortando teleport")
 		end
 		self:_resetPad(pad)
@@ -398,13 +398,13 @@ function LobbyManager:_executeTeleport(pad)
 		return
 	end
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Teletransportando grupo al Capitulo " .. pad.chapter)
 		print("[LobbyManager] PlaceId: " .. tostring(placeId) .. " | Jugadores: " .. tostring(#playerList))
 	end
 
 	local sessionId = HttpService:GenerateGUID(false)
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] SessionID: " .. sessionId)
 	end
 
@@ -438,7 +438,7 @@ function LobbyManager:_executeTeleport(pad)
 
 	if not result.success then
 		warn("[LobbyManager] Teleport failed: " .. tostring(result.error))
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyManager] Reseteando " .. pad.part.Name .. " a Libre")
 		end
 		self:_resetPad(pad)
@@ -446,7 +446,7 @@ function LobbyManager:_executeTeleport(pad)
 		return
 	end
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[LobbyManager] Teleport ejecutado exitosamente")
 	end
 

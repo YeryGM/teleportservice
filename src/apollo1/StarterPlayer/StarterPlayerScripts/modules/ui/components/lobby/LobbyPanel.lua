@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local React = require(ReplicatedStorage:WaitForChild("packages"):WaitForChild("React"))
@@ -43,7 +43,7 @@ local function LobbyPanel()
 		if not hasChapter then
 			return
 		end
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyPanel] Submit -> chapter: " .. chapterSelected
 				.. ", difficulty: " .. tostring(difficulty))
 		end
@@ -52,7 +52,7 @@ local function LobbyPanel()
 	end
 
 	local function onCancel()
-		if DEBUG_MODE then
+		if debugOn then
 			print("[LobbyPanel] Cancel")
 		end
 		UISLobby.cancel()
@@ -230,7 +230,7 @@ local function LobbyPanel()
 	})
 end
 
-if DEBUG_MODE then
+if debugOn then
 	print("[LobbyPanel] Componente cargado")
 end
 

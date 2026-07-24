@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local LobbySelectors = {}
 
@@ -18,7 +18,7 @@ function LobbySelectors.selectChapters(state)
 	return state.lobby.chapters
 end
 
-if DEBUG_MODE then
+if debugOn then
 	print("[LobbySelectors] Selectores cargados")
 end
 

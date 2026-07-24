@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local Chapters = {
 	Capitulo_1 = {
@@ -21,7 +21,7 @@ local Chapters = {
 	},
 }
 
-if DEBUG_MODE then
+if debugOn then
 	print("[Chapters] Modulo cargado " .. tostring(#Chapters) .. " capitulos")
 end
 

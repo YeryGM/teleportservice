@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local MemoryStoreService = game:GetService("MemoryStoreService")
 
@@ -19,7 +19,7 @@ function MemoryStoreManager.SaveSession(sessionId: string, data: { chapter: stri
 		return false
 	end
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[MemoryStoreManager] Session saved (expires in " .. tostring(SESSION_EXPIRY) .. "s)")
 	end
 

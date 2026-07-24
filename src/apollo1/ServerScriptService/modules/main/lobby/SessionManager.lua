@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local TeleportService = game:GetService("TeleportService")
 
@@ -18,7 +18,7 @@ function SessionManager.TeleportGroup(playerList: { Player }, placeId: number, t
 		end)
 
 		if ok then
-			if DEBUG_MODE then
+			if debugOn then
 				print("[SessionManager] TeleportAsync succeeded")
 			end
 			return { success = true }

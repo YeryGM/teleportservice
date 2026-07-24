@@ -5,9 +5,6 @@ local packages = ReplicatedStorage:WaitForChild("packages")
 local React = require(packages:WaitForChild("React"))
 local ReactRoblox = require(packages:WaitForChild("ReactRoblox"))
 
-local GameplayRoot = require(script.Parent.roots.GameplayRoot)
-local OverlayRoot = require(script.Parent.roots.OverlayRoot)
-local MinigameRoot = require(script.Parent.roots.MinigameRoot)
 local ModalRoot = require(script.Parent.roots.ModalRoot)
 local UISLobby = require(script.Parent.services.UISLobby)
 
@@ -52,14 +49,8 @@ function UiRootC:load()
     end
     local playerGui = player:WaitForChild("PlayerGui")
 
-    local gameplayGui = getOrCreateScreenGui(playerGui, "UiGameplayGui", 1)
-    local overlayGui = getOrCreateScreenGui(playerGui, "UiOverlayGui", 10)
-    local minigameGui = getOrCreateScreenGui(playerGui, "UiMinigameGui", 20)
     local modalGui = getOrCreateScreenGui(playerGui, "UiModalGui", 30)
 
-    self:mountRoot(GameplayRoot, gameplayGui)
-    self:mountRoot(OverlayRoot, overlayGui)
-    self:mountRoot(MinigameRoot, minigameGui)
     self:mountRoot(ModalRoot, modalGui)
 
     UISLobby.init()

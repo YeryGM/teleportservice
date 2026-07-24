@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local LobbySelectors = require(script.Parent.Parent.store.lobby.LobbySelectors)
 local useStoreSelector = require(script.Parent.useStoreSelector)
@@ -21,7 +21,7 @@ function useLobby.useChapters()
 	return useStoreSelector(LobbySelectors.selectChapters)
 end
 
-if DEBUG_MODE then
+if debugOn then
 	print("[useLobby] Hook cargado")
 end
 

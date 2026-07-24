@@ -1,4 +1,4 @@
-local DEBUG_MODE = true
+local debugOn = true
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -15,7 +15,7 @@ local connections = {}
 
 function UISLobby.init()
 	local openConn = OpenLobbyUI.OnClientEvent:Connect(function(data)
-		if DEBUG_MODE then
+		if debugOn then
 			local count = data and data.chapters and #data.chapters or 0
 			print("[UISLobby] OpenLobbyUI recibido -> " .. tostring(count) .. " capitulos disponibles")
 		end
@@ -27,7 +27,7 @@ function UISLobby.init()
 	end)
 
 	local closeConn = CloseLobbyUI.OnClientEvent:Connect(function()
-		if DEBUG_MODE then
+		if debugOn then
 			print("[UISLobby] CloseLobbyUI recibido -> cerrando lobby")
 		end
 		LobbyActions.closeLobby()
@@ -36,7 +36,7 @@ function UISLobby.init()
 	table.insert(connections, openConn)
 	table.insert(connections, closeConn)
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[UISLobby] Listeners inicializados (OpenLobbyUI, CloseLobbyUI)")
 	end
 end
@@ -49,20 +49,20 @@ function UISLobby.destroy()
 	end
 	connections = {}
 
-	if DEBUG_MODE then
+	if debugOn then
 		print("[UISLobby] Connections destruidas")
 	end
 end
 
 function UISLobby.submitConfig(chapter: string, difficulty: number)
-	if DEBUG_MODE then
+	if debugOn then
 		print("[UISLobby] submitConfig -> chapter: " .. chapter .. ", difficulty: " .. tostring(difficulty))
 	end
 	SubmitLobbyConfig:FireServer({ chapter = chapter, difficulty = difficulty })
 end
 
 function UISLobby.cancel()
-	if DEBUG_MODE then
+	if debugOn then
 		print("[UISLobby] cancel -> CancelLobby:FireServer()")
 	end
 	CancelLobby:FireServer()

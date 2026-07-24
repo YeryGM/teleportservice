@@ -1,2 +1,0 @@
-local IFCCutscenes = {}
-return IFCCutscenes

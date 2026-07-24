@@ -1,35 +1,19 @@
-local DEBUG_MODE = true
+local debugOn = true
 
---[[ local Player = game:GetService("Players").LocalPlayer
-local PlayerScripts = Player.PlayerScripts
---EVENTS BINDABLE
-local itemEvents = PlayerScripts.events.general.items
-local backPackChangedEvent:BindableEvent = itemEvents.backPackChanged
-local playerEvents = PlayerScripts.events.general.player
-local changeSpectator: BindableEvent = playerEvents.spectateStep
--- FUNCS BINDABLE
-local playerFuncs = PlayerScripts.funcs.general.player
-local requestRevive: BindableFunction = playerFuncs.requestRevive ]]
-
-
---SHOULD BE STARTER PLAYER AS THIS RUNS VIA COMM AND NOT ON RUNTIME
--- SO CHANGE ALL (P)layerScripts to StarterPlayer.StarterPlayerScripts
 local Signals = {
     signals = {},
 }
 
-Signals.signals[1] = {
-    {folder = "StarterPlayer.StarterPlayerScripts.events.general.items", events = {"backPackChanged"}},
-    {folder = "StarterPlayer.StarterPlayerScripts.events.general.player", events = {"spectateStep"}},
-}
-
-Signals.signals[2] = {
-    {folder = "StarterPlayer.StarterPlayerScripts.funcs.general.player", events = {"requestRevive"}},
-}
-
+-- REMOTE EVENTS (lobby only)
 Signals.signals[3] = {
     {folder = "ReplicatedStorage.events.general.lobby", events = {"OpenLobbyUI", "CloseLobbyUI", "SubmitLobbyConfig", "CancelLobby"}},
 }
+
+-- BINDABLE EVENTS (none for lobby)
+Signals.signals[1] = {}
+
+-- BINDABLE FUNCTIONS (none for lobby)
+Signals.signals[2] = {}
 
 local function createSignal(name: string, parent: Instance, type: number)
     if parent:FindFirstChild(name) then
@@ -51,7 +35,6 @@ local function createSignal(name: string, parent: Instance, type: number)
 end
 
 local function createFolder(path:string)
-    -- Split the path into folder names
     local folderNames = {}
     for folderName in path:gmatch("[^%.]+") do
         table.insert(folderNames, folderName)
@@ -75,7 +58,7 @@ function Signals.create()
             local folder = createFolder(signal.folder)
             for _, eventName in ipairs(signal.events) do
                 createSignal(eventName, folder, type)
-                if DEBUG_MODE then
+                if debugOn then
                     print("[SignalsC] Creado: " .. signal.folder .. "." .. eventName)
                 end
             end
