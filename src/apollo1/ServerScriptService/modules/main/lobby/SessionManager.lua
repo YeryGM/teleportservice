@@ -13,18 +13,29 @@ function SessionManager.TeleportGroup(playerList: { Player }, placeId: number, t
 	end
 
 	for attempt = 1, MAX_RETRIES do
-		local ok, err = pcall(function()
-			TeleportService:TeleportAsync(placeId, playerList, teleportData)
+		local ok, result = pcall(function()
+			local options = Instance.new("TeleportOptions")
+			options:SetTeleportData(teleportData)
+			return TeleportService:TeleportAsync(placeId, playerList, options)
 		end)
 
 		if ok then
+			if result and result.Status ~= Enum.TeleportStatus.TeleportSuccess then
+				warn("[SessionManager] TeleportAsync status: " .. tostring(result.Status)
+					.. " (attempt " .. attempt .. "/" .. MAX_RETRIES .. ")")
+				if attempt < MAX_RETRIES then
+					task.wait(RETRY_DELAY)
+				end
+				continue
+			end
+
 			if debugOn then
 				print("[SessionManager] TeleportAsync succeeded")
 			end
 			return { success = true }
 		end
 
-		warn("[SessionManager] TeleportAsync failed (attempt " .. attempt .. "/" .. MAX_RETRIES .. ") -> " .. tostring(err))
+		warn("[SessionManager] TeleportAsync exception (attempt " .. attempt .. "/" .. MAX_RETRIES .. "): " .. tostring(result))
 
 		if attempt < MAX_RETRIES then
 			task.wait(RETRY_DELAY)

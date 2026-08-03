@@ -169,10 +169,7 @@ function LobbyManager:_registerStates(pad)
 		end,
 		function()
 			self:_disconnectPadEvents(pad)
-			if pad.checkThread then
-				task.cancel(pad.checkThread)
-				pad.checkThread = nil
-			end
+			pad.checkThread = nil
 		end
 	)
 
@@ -364,10 +361,35 @@ function LobbyManager:_checkTeleportLoop(pad)
 
 		if count >= pad.sizeTarget then
 			if debugOn then
-				print("[LobbyManager] " .. pad.part.Name .. ": Jugadores completos (" .. count .. "/" .. pad.sizeTarget .. ") -> Teleportando")
+				print("[LobbyManager] " .. pad.part.Name .. ": Jugadores completos (" .. count .. "/" .. pad.sizeTarget .. ") -> iniciando countdown")
 			end
-			pad.sm:SetState(Enums.lobby.state.Teleportando)
-			return
+
+			local countdownComplete = true
+			for i = 5, 1, -1 do
+				if pad.sm:GetState() ~= Enums.lobby.state.Esperando then
+					return
+				end
+
+				print("[LobbyManager] " .. pad.part.Name .. ": Teletransportando en " .. i .. "...")
+				task.wait(1)
+
+				local currentCount = 0
+				for _ in pairs(pad.players) do
+					currentCount += 1
+				end
+
+				if currentCount < pad.sizeTarget then
+					warn("[LobbyManager] " .. pad.part.Name .. ": Jugadores insuficientes durante countdown ("
+						.. currentCount .. "/" .. pad.sizeTarget .. "), cancelando")
+					countdownComplete = false
+					break
+				end
+			end
+
+			if countdownComplete and pad.sm:GetState() == Enums.lobby.state.Esperando then
+				pad.sm:SetState(Enums.lobby.state.Teleportando)
+				return
+			end
 		end
 
 		task.wait(0.5)
@@ -408,8 +430,8 @@ function LobbyManager:_executeTeleport(pad)
 	end
 
 	if debugOn then
-		print("[LobbyManager] Teletransportando grupo al Capitulo " .. pad.chapter)
-		print("[LobbyManager] PlaceId: " .. tostring(placeId) .. " | Jugadores: " .. tostring(#playerList))
+		print("[LobbyManager] Intentando teletransportar al PlaceId: " .. tostring(placeId))
+		print("[LobbyManager] Jugadores: " .. tostring(#playerList) .. " | Chapter: " .. pad.chapter .. " | Difficulty: " .. tostring(pad.difficulty))
 	end
 
 	local sessionId = HttpService:GenerateGUID(false)
